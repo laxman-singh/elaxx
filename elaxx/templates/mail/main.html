@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block extra_cssstyle %}
+{% endblock %}
+
+{% block extra_javascript %}
+{% endblock %}
+
+{% block title %}{{ folder }} - {{ user }}@elaxx.co.in - eLAXX MAIL{% endblock %}
+{% block content %}
+<header id="header">
+		<hgroup>
+			<h1 class="site_title"><a href="#"><img src="/site_media/images/elaxx.png" alt="elaxx logo"/></a></h1>
+			<h2 class="section_title"></h2>
+		</hgroup>
+	</header> <!-- end of header bar -->
+	<section id="secondary_bar">
+		<div class="user">
+			<p>eLAXX Mail - Alpha
+		</div>
+		<div class="breadcrumbs_container">
+			<article class="breadcrumbs"><a href="/mail/">Mail</a> <div class="breadcrumb_divider"></div> 
+			<a href="#">RSS Reader</a> <div class="breadcrumb_divider"></div> 
+			<a href="#">Calender</a> <div class="breadcrumb_divider"></div> 
+			<a class="current" href="#">Settings</a></article>
+			<article class="signout">
+				<a href="#">Welcome {{ user }}@elaxx.com</a><div class="signout_divider"></div><a class="current" href="/admin/logout/"> SignOut</a>
+			</article>
+		</div>
+		
+	</section><!-- end of secondary bar -->
+	
+	<aside id="sidebar" class="column">
+		<form class="quick_search">
+			<input type="text" value="Quick Search" onfocus="if(!this._haschanged){this.value=''};this._haschanged=true;">
+		</form>
+		<hr/>
+		<h3>Mail</h3>
+		<ul class="toggle">
+			<li class="icn_new_article"><a href="/mail/newmail/">Compose</a></li>
+			<li class="icn_categories"><a href="/mail/">INBOX</a></li>
+			<li class="icn_jump_back"><a href="/mail/msglist/0/INBOX.Sent/1/40/date/Desc//">Sent Item</a></li>
+			<li class="icn_folder"><a href="/mail/msglist/0/INBOX.Drafts/1/40/date/Desc//">Drafts</a></li>
+			<li class="icn_trash"><a href="/mail/msglist/0/INBOX.Trash/1/40/date/Desc//">Trash</a></li>
+			<li class="icn_trash"><a href="/mail/msglist/0/INBOX.Trash/1/40/date/Desc//">Junk Mail</a></li>
+		</ul>
+		<h3>My Folders</h3>
+		<ul class="toggle">
+			<li class="icn_folder"><a href="#">File Manager</a></li>
+			<li class="icn_photo"><a href="#">Gallery</a></li>
+			<li class="icn_audio"><a href="#">Audio</a></li>
+			<li class="icn_video"><a href="#">Video</a></li>
+		</ul>
+
+	</aside><!-- end of sidebar -->
+	
+	<section id="main" class="column">
+		<article class="breadcrumbs"><a class="current" href="/mail/">Refresh</a></article>
+		<article class="breadcrumbs"><a class="current" href="#">Delete</a></article>
+		<article class="breadcrumbs"><a class="current" href="#">Move to</a></article>
+		<article class="breadcrumbs"><a class="current" href="#">More Actions</a></article>
+		{% if show_inbox %}
+		<article class="module width_3_quarter">
+		<header><h3 class="tabs_involved">{{ folder }}({{ totalmsgs }})</h3>
+		<!-- <ul class="tabs">
+   			<li><a href="#tab1">Classic</a></li>
+    		<li><a href="#tab2">Dark</a></li>
+		</ul>-->
+		</header>
+
+		<div class="tab_container">
+			<div id="tab1" class="tab_content">
+			<table class="tablesorter" cellspacing="0"> 
+			
+			<tbody>
+			{% for msg in msglist %}
+				<tr {% if msg.flags|length = 0 %} style="font-weight: bold;" {% elif msg.flags|length = 2 %} style="color: red;" {% endif %} onclick="window.location='/mail/viewmsg/{{ server }}/{{ folder }}/{{ msg.uid }}/'"> 
+   					<td><input type="checkbox"></td> 
+    				<td>{{ msg.from }}</td> 
+    				<td>{{ msg.subject }}</td> 
+    				<td>{{ msg.date }}</td> 
+    				</tr> 
+			{% endfor %}
+				
+				
+			</tbody> 
+			</table>
+			</div><!-- end of #tab1 -->
+			
+		</div><!-- end of .tab_container -->
+		
+		</article><!-- end of content manager article -->
+		{% endif %}
+		{% if show_compose %}
+			<div class="clear"></div>
+		
+		<article class="module width_full">
+			<form method="post" action="/mail/send/" onsubmit="sendMail(this); return false;">
+			<header><h3>Compose new mail</h3></header>
+				<div class="module_content">
+						<fieldset>
+							<label>Mail To:</label>
+							<input type="text" name="newmailto" id="newmailto"/>
+							<label><a href="#">Add CC</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Add BCC</a></label>
+							<label></label><label></label><label></label>
+							<label>Subject:</label>
+							<input type="text" name="newmailsubject" id="newmailsubject"/>
+							<label><a href="#">Attach a file</a></label>
+							<input type="hidden" name="newmailfrom" id="newmailfrom" value="{{ user }}@elaxx.co.in"/>
+						</fieldset>
+						<fieldset>
+							<label>Message Body:</label>
+							<textarea rows="18" name="editor" id="editor"></textarea>
+						</fieldset>
+				</div>
+			<footer>
+				<div class="submit_link">
+					<input type="submit" value="Send" class="alt_btn">
+				</div>
+			</footer>
+			</form>
+		</article><!-- end of post new article -->
+		{% endif %}
+		{% if view_message %}
+				<div class="clear"></div>
+		
+		<article class="module width_full">
+			<header><h3>view message</h3>
+				<!-- <a href="#"><img src="/site_media/images/mail-reply-sender.png" alt="Reply To Sender" title="Reply To Sender" /></a>
+				<a href="#"><img src="/site_media/images/mail-reply-all.png" alt="Reply To All" title="Reply To All" /></a>
+				<a href="#"><img src="/site_media/images/mail-replylist.png" alt="Reply To List" title="Reply To List" /></a>
+				<a href="#"><img src="/site_media/images/mail-forward.png" alt="Forward" title="Forward" /></a>
+				<a href="#"><img src="/site_media/images/mail-delete.png" alt="Delete" title="Delete" /></a>
+				Mark As: 
+				<a href="#" onclick="dw.viewmsg.markmsg('read', '{{ server }}', '{{ folder }}', '{{ uid }}'); $('#msglist .foldersel').change(); return false;">Read</a>
+				<a href="#" onclick="dw.viewmsg.markmsg('unread', '{{ server }}', '{{ folder }}', '{{ uid }}'); $('#msglist .foldersel').change(); return false;">Unread</a>
+				<a href="#" onclick="dw.viewmsg.markmsg('important', '{{ server }}', '{{ folder }}', '{{ uid }}'); $('#msglist .foldersel').change(); return false;">Important</a> -->
+			</header>
+				<div class="module_content">
+					<fieldset>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Subject:</b> &nbsp;&nbsp;&nbsp;&nbsp;{{ mailmsg.subject }} <br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>From: </b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ mailmsg.from }} <br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Date: </b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ mailmsg.date }} <br/>
+					</fieldset>
+					<fieldset>
+						<div class="module_content">
+							<p>{{ body|urlizetrunc:"50"|linebreaksbr }}</p>
+						</div>
+					</fieldset>
+				</div>
+		</article><!-- end of post new article -->
+		{% endif%}
+		
+		<div class="clear"></div>
+			
+		<div class="spacer"></div>
+		
+	</section>
+
+{% endblock %}

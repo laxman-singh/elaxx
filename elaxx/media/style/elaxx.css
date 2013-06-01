@@ -1,0 +1,21 @@
+#footer{
+background-image:url(images/footer/footer.jpg);
+background-repeat:none;
+clear: both;
+float: left;
+height:50px;
+width: 950px;
+padding-top:17px;
+text-align:center;
+}
+#footer p{
+background: #eff5e7;
+width: 400px;
+height:10px;
+padding-bottom: 10px;
+border: 1px solid #bababa;
+line-height:10px;
+margin-left:auto;
+margin-right:auto;
+font-size:11px;
+} 
